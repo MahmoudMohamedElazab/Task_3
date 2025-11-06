@@ -33,6 +33,30 @@ export default function AllPerks() {
   
   useEffect(() => {
     // Extract all merchant names from perks array
+    loadAllPerks();
+  }, []);
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      loadAllPerks()
+    }, 500)
+
+    // Clear timeout if the input value changes
+    return () => clearTimeout(delayDebounceFn)
+  }, [searchQuery, merchantFilter])
+
+  // ==================== SIDE EFFECTS WITH useEffect HOOK ====================
+
+  /*
+   TODO: HOOKS TO IMPLEMENT
+   * useEffect Hook #1: Initial Data Loading
+   * useEffect Hook #2: Auto-search on Input Change
+
+  */
+
+
+  useEffect(() => {
+    // Extract all merchant names from perks array
     const merchants = perks
       .map(perk => perk.merchant) // Get merchant from each perk
       .filter(merchant => merchant && merchant.trim()) // Remove empty/null values
@@ -45,7 +69,7 @@ export default function AllPerks() {
     setUniqueMerchants(unique)
     
     // This effect depends on [perks], so it re-runs whenever perks changes
-  }, [perks]) // Dependency: re-run when perks array changes
+  }, [perks])
 
   
   async function loadAllPerks() {
@@ -136,7 +160,8 @@ export default function AllPerks() {
                 type="text"
                 className="input"
                 placeholder="Enter perk name..."
-                
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
               <p className="text-xs text-zinc-500 mt-1">
                 Auto-searches as you type, or press Enter / click Search
@@ -151,7 +176,8 @@ export default function AllPerks() {
               </label>
               <select
                 className="input"
-                
+                value={merchantFilter}
+                onChange={(e) => setMerchantFilter(e.target.value)}
               >
                 <option value="">All Merchants</option>
                 
@@ -289,4 +315,3 @@ export default function AllPerks() {
     </div>
   )
 }
-
